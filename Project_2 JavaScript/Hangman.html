@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  </head>
+  <body>
+    <div style="padding: 16px; max-width: 1500px; align-content: center">
+      <h1>Hangman</h1>
+      <h6>(or Hangwoman, gotta keep it PC)</h6>
+      <p></p>
+      <h4>Word:</h4>
+      <p id="word"></p>
+      <p id="letterCount"></p>
+      <button type="button" id="a" class="btn btn-outline-primary" onclick="letterInput('a')">A</button>
+      <button type="button" id="b" class="btn btn-outline-primary" onclick="letterInput('b')">B</button>
+      <button type="button" id="c" class="btn btn-outline-primary" onclick="letterInput('c')">C</button>
+      <button type="button" id="d" class="btn btn-outline-primary" onclick="letterInput('d')">D</button>
+      <button type="button" id="e" class="btn btn-outline-primary" onclick="letterInput('e')">E</button>
+      <button type="button" id="f" class="btn btn-outline-primary" onclick="letterInput('f')">F</button>
+      <button type="button" id="g" class="btn btn-outline-primary" onclick="letterInput('g')">G</button>
+      <button type="button" id="h" class="btn btn-outline-primary" onclick="letterInput('h')">H</button>
+      <button type="button" id="i" class="btn btn-outline-primary" onclick="letterInput('i')">I</button>
+      <button type="button" id="j" class="btn btn-outline-primary" onclick="letterInput('j')">J</button>
+      <button type="button" id="k" class="btn btn-outline-primary" onclick="letterInput('k')">K</button>
+      <button type="button" id="l" class="btn btn-outline-primary" onclick="letterInput('l')">L</button>
+      <button type="button" id="m" class="btn btn-outline-primary" onclick="letterInput('m')">M</button>
+      <button type="button" id="n" class="btn btn-outline-primary" onclick="letterInput('n')">N</button>
+      <button type="button" id="o" class="btn btn-outline-primary" onclick="letterInput('o')">O</button>
+      <button type="button" id="p" class="btn btn-outline-primary" onclick="letterInput('p')">P</button>
+      <button type="button" id="q" class="btn btn-outline-primary" onclick="letterInput('q')">Q</button>
+      <button type="button" id="r" class="btn btn-outline-primary" onclick="letterInput('r')">R</button>
+      <button type="button" id="s" class="btn btn-outline-primary" onclick="letterInput('s')">S</button>
+      <button type="button" id="t" class="btn btn-outline-primary" onclick="letterInput('t')">T</button>
+      <button type="button" id="u" class="btn btn-outline-primary" onclick="letterInput('u')">U</button>
+      <button type="button" id="v" class="btn btn-outline-primary" onclick="letterInput('v')">V</button>
+      <button type="button" id="w" class="btn btn-outline-primary" onclick="letterInput('w')">W</button>
+      <button type="button" id="x" class="btn btn-outline-primary" onclick="letterInput('x')">X</button>
+      <button type="button" id="y" class="btn btn-outline-primary" onclick="letterInput('y')">Y</button>
+      <button type="button" id="z" class="btn btn-outline-primary" onclick="letterInput('z')">Z</button>
+      <p></p>
+      <button type="button" class="btn btn-outline-secondary" onclick="initializeGame()">New Game</button>
+      <p></p>
+      <h2 id="message"></h2>
+      <p></p>
+      <p id="hangman"></p>
+    </div>
+    <script>
+
+      var letterArray = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
+                         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+      var wordArray = ["cummingtonite", "arsole", "vomitoxin", "nonanal", "fucitol", ];
+      var randomWord;
+      var word;
+      var allowedGuesses = 7;
+      var wrongGuesses;
+      var wordState;
+      var hangmanState = ["&nbsp____<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|_______", 
+                          "&nbsp____<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|_______",
+                          "&nbsp____<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|_______",
+                          "&nbsp____<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbspO<BR/>|<BR/>|<BR/>|<BR/>|<BR/>|_______",
+                          "&nbsp____<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbspO<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|<BR/>|<BR/>|<BR/>|_______",
+                          "&nbsp____<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbspO<BR/>|&nbsp&nbsp--|--<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|<BR/>|<BR/>|_______",
+                          "&nbsp____<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbspO<BR/>|&nbsp&nbsp--|--<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbsp/&nbsp<BR/>|<BR/>|_______",
+                          "&nbsp____<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp&nbsphe ded<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbspO<BR/>|&nbsp&nbsp--|--<BR/>|&nbsp&nbsp&nbsp&nbsp&nbsp|<BR/>|&nbsp&nbsp&nbsp&nbsp/ &#92;&nbsp<BR/>|<BR/>|_______"];
+
+      var wordElement = document.getElementById('word');
+      var letterCountElement = document.getElementById('letterCount');
+      var hangmanElement = document.getElementById('hangman');
+      var messageElement = document.getElementById('message');
+
+      function initializeGame() {
+
+       for (var i = 0; i < letterArray.length; i++) {
+        
+        document.getElementById(letterArray[i]).style.visibility = 'visible';
+
+        if (document.getElementById(letterArray[i]).disabled == true)
+          document.getElementById(letterArray[i]).disabled = false;
+       }
+
+        randomWord = Math.floor(Math.random() * wordArray.length);
+        word = wordArray[randomWord];
+        wordState = [];
+        wrongGuesses = 0;
+
+        for (var i = 0; i < word.length; i++) {
+          wordState.push('_');
+        }
+
+        wordElement.innerHTML = wordState.join(' ');
+        letterCountElement.innerHTML = wrongGuesses + "/" + allowedGuesses + " Misses";
+        hangmanElement.innerHTML = hangmanState[wrongGuesses];
+        messageElement.innerHTML = " ";
+      }
+
+      function updateGuesses(letter) {
+
+        document.getElementById(letter).disabled = true;
+        document.getElementById(letter).style.visibility = 'hidden';
+
+        if (word.indexOf(letter) === -1) {
+          wrongGuesses++;
+          letterCountElement.innerHTML = wrongGuesses + "/" + allowedGuesses + " Misses";
+          hangmanElement.innerHTML = hangmanState[wrongGuesses]
+
+        } 
+        else {
+          for (var i = 0; i < word.length; i++) {
+            if (word[i] === letter) {
+              wordState[i] = letter;
+            }
+          }
+
+          wordElement.innerHTML = wordState.join(' ');
+        }
+      }
+
+      function checkWin() {
+        if (wordState.indexOf('_') === -1) {
+
+          messageElement.innerHTML = "You Won! Press New Game and try again.";          
+          for (var i = 0; i < letterArray.length; i++){
+            document.getElementById(letterArray[i]).disabled = true;
+            }
+        } 
+        else if (wrongGuesses == allowedGuesses) {
+
+          messageElement.innerHTML = "You Lost. The word was '" + word + "'. Press New Game and try again.";
+          for (var i = 0; i < letterArray.length; i++)
+            document.getElementById(letterArray[i]).disabled = true;
+
+        }
+      }
+
+      function letterInput(letterGuessed) {
+        updateGuesses(letterGuessed);
+        checkWin();
+      };
+
+      initializeGame();
+
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.js"
+        integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+        crossorigin="anonymous"></script>
+  </body>
+</html>

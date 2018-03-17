@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js'></script>
+
+	<script type='text/javascript'>
+		var socket = io('http://localhost:3000', {path: '/socket.io'}); // connect to server
+
+		socket.on('fromServer', function(data) { // listen for fromServer message
+			console.log('Received ' + data.id + ' from server since someone else joined');
+			socket.emit('fromClient', {id: 'bar'}); // send fromClient message to server
+		});
+	</script>
+
+    <title>Blackjack!</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  </head>
+  <body>
+
+  	<p id="dealerHand"></p>
+  	<p id="playerHand"></p>
+  	<p id="playerCollectiveTotal"></p>
+    <button type="button" class="btn btn-outline-success" id="hitButton" style="margin-left: 50px;" onclick="hit()">Hit</button>
+	<button type="button" class="btn btn-outline-danger" id="standButton" style="margin-left: 10px;" onclick="stand()">Stand</button>
+	<h3 style="margin-top: 50px; margin-left: 50px;" id="gameState"></h3>
+	<button type="button" class="btn btn-outline-secondary" style="margin-top: 30px; margin-left: 50px;" onclick="initializeGame()">New Game</button>
+
+	<script type="text/javascript">
+
+		var cardArray = ['02C', '03C', '04C', '05C', '06C', '07C', '08C', '09C', '10C', 'JC', 'QC', 'KC', 'AC',
+		      			 '02S', '03S', '04S', '05S', '06S', '07S', '08S', '09S', '10S', 'JS', 'QS', 'KS', 'AS',
+		      			 '02D', '03D', '04D', '05D', '06D', '07D', '08D', '09D', '10D', 'JD', 'QD', 'KD', 'AD',
+		      			 '02H', '03H', '04H', '05H', '06H', '07H', '08H', '09H', '10H', 'JH', 'QH', 'KH', 'AH',];
+		var playerCollectiveSum;
+		var dealerCollectiveSum;
+		var playerDeck;
+		var dealerDeck;
+		var playerDeckCardAmount;
+		var dealerDeckCardAmount;
+		var randomCard;
+		var dealtCards;
+		var dealtCardsIndex;
+		var cardAlreadyDealt;
+
+      	var dealerHandElement = document.getElementById('dealerHand');
+      	var playerHandElement = document.getElementById('playerHand');
+     	var playerCollectiveTotalElement = document.getElementById('playerCollectiveTotal');
+      	var gameStateElement = document.getElementById('gameState');
+
+		function initializeGame() {
+			
+			playerDeck = [];
+			dealerDeck = [];
+			dealtCards = [];
+			playerDeckCardAmount = 0;
+			dealerDeckCardAmount = 0;
+			dealtCardsIndex = 0;
+			playerCollectiveSum = 0;
+			dealerCollectiveSum = 0;
+			cardAlreadyDealt = false;
+			document.getElementById('hitButton').disabled = false;
+			document.getElementById('standButton').disabled = false;
+			gameStateElement.innerHTML = " ";
+
+			//Deal Player's Cards
+			for (var i = 0; i < 2; i++) {
+
+				randomCard = Math.floor(Math.random() * cardArray.length);								
+				cardAlreadyDealt = cardAlreadyDealtCheck();
+
+				while(cardAlreadyDealt == true) {
+
+					randomCard = Math.floor(Math.random() * cardArray.length);
+					cardAlreadyDealt = cardAlreadyDealtCheck();
+				
+				}
+
+				dealtCards[i] = cardArray[randomCard];
+				dealtCardsIndex = i+1;
+
+    			playerDeck[i] = cardArray[randomCard];
+    			playerDeckCardAmount = i+1;
+
+    			if(cardArray[randomCard] == '02C' || cardArray[randomCard] == '02S' || cardArray[randomCard] == '02D' || cardArray[randomCard] == '02H')
+    				playerCollectiveSum += 2;
+    			else if (cardArray[randomCard] == '03C' || cardArray[randomCard] == '03S' || cardArray[randomCard] == '03D' || cardArray[randomCard] == '03H')
+    				playerCollectiveSum += 3;
+    			else if (cardArray[randomCard] == '04C' || cardArray[randomCard] == '04S' || cardArray[randomCard] == '04D' || cardArray[randomCard] == '04H')
+    				playerCollectiveSum += 4;
+    			else if (cardArray[randomCard] == '05C' || cardArray[randomCard] == '05S' || cardArray[randomCard] == '05D' || cardArray[randomCard] == '05H')
+    				playerCollectiveSum += 5;    			
+    			else if (cardArray[randomCard] == '06C' || cardArray[randomCard] == '06S' || cardArray[randomCard] == '06D' || cardArray[randomCard] == '06H')
+    				playerCollectiveSum += 6;
+    			else if (cardArray[randomCard] == '07C' || cardArray[randomCard] == '07S' || cardArray[randomCard] == '07D' || cardArray[randomCard] == '07H')
+    				playerCollectiveSum += 7;
+    			else if (cardArray[randomCard] == '08C' || cardArray[randomCard] == '08S' || cardArray[randomCard] == '08D' || cardArray[randomCard] == '08H')
+    				playerCollectiveSum += 8;   
+    			else if (cardArray[randomCard] == '09C' || cardArray[randomCard] == '09S' || cardArray[randomCard] == '09D' || cardArray[randomCard] == '09H')
+    				playerCollectiveSum += 9;
+    			else if (cardArray[randomCard] == '10C' || cardArray[randomCard] == '10S' || cardArray[randomCard] == '10D' || cardArray[randomCard] == '10H')
+    				playerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'JC' || cardArray[randomCard] == 'JS' || cardArray[randomCard] == 'JD' || cardArray[randomCard] == 'JH')
+    				playerCollectiveSum += 10;    			
+    			else if (cardArray[randomCard] == 'QC' || cardArray[randomCard] == 'QS' || cardArray[randomCard] == 'QD' || cardArray[randomCard] == 'QH')
+    				playerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'KC' || cardArray[randomCard] == 'KS' || cardArray[randomCard] == 'KD' || cardArray[randomCard] == 'KH')
+    				playerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'AC' || cardArray[randomCard] == 'AS' || cardArray[randomCard] == 'AD' || cardArray[randomCard] == 'AH') {
+    				if(playerCollectiveSum < 11)
+    					playerCollectiveSum += 11;
+    				else
+    					playerCollectiveSum += 1;   
+    			}
+
+			}
+
+			playerHandElement.innerHTML = "Your Hand: " + playerDeck.join(', ');
+			playerCollectiveTotalElement.innerHTML = "Collective Total: " + playerCollectiveSum;
+
+			//Deal Dealer's Cards
+			for (var i = 0; i < 2; i++) {
+
+				randomCard = Math.floor(Math.random() * cardArray.length);				
+				cardAlreadyDealt = cardAlreadyDealtCheck();
+
+				while(cardAlreadyDealt == true) {
+
+					randomCard = Math.floor(Math.random() * cardArray.length);
+					cardAlreadyDealt = cardAlreadyDealtCheck();
+				
+				}
+
+				dealtCards[dealtCardsIndex] = cardArray[randomCard];
+				dealtCardsIndex++;
+
+    			dealerDeck[i] = cardArray[randomCard];
+    			dealerDeckCardAmount = i+1;
+
+    			if(cardArray[randomCard] == '02C' || cardArray[randomCard] == '02S' || cardArray[randomCard] == '02D' || cardArray[randomCard] == '02H')
+    				dealerCollectiveSum += 2;
+    			else if (cardArray[randomCard] == '03C' || cardArray[randomCard] == '03S' || cardArray[randomCard] == '03D' || cardArray[randomCard] == '03H')
+    				dealerCollectiveSum += 3;
+    			else if (cardArray[randomCard] == '04C' || cardArray[randomCard] == '04S' || cardArray[randomCard] == '04D' || cardArray[randomCard] == '04H')
+    				dealerCollectiveSum += 4;
+    			else if (cardArray[randomCard] == '05C' || cardArray[randomCard] == '05S' || cardArray[randomCard] == '05D' || cardArray[randomCard] == '05H')
+    				dealerCollectiveSum += 5;    			
+    			else if (cardArray[randomCard] == '06C' || cardArray[randomCard] == '06S' || cardArray[randomCard] == '06D' || cardArray[randomCard] == '06H')
+    				dealerCollectiveSum += 6;
+    			else if (cardArray[randomCard] == '07C' || cardArray[randomCard] == '07S' || cardArray[randomCard] == '07D' || cardArray[randomCard] == '07H')
+    				dealerCollectiveSum += 7;
+    			else if (cardArray[randomCard] == '08C' || cardArray[randomCard] == '08S' || cardArray[randomCard] == '08D' || cardArray[randomCard] == '08H')
+    				dealerCollectiveSum += 8;   
+    			else if (cardArray[randomCard] == '09C' || cardArray[randomCard] == '09S' || cardArray[randomCard] == '09D' || cardArray[randomCard] == '09H')
+    				dealerCollectiveSum += 9;
+    			else if (cardArray[randomCard] == '10C' || cardArray[randomCard] == '10S' || cardArray[randomCard] == '10D' || cardArray[randomCard] == '10H')
+    				dealerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'JC' || cardArray[randomCard] == 'JS' || cardArray[randomCard] == 'JD' || cardArray[randomCard] == 'JH')
+    				dealerCollectiveSum += 10;    			
+    			else if (cardArray[randomCard] == 'QC' || cardArray[randomCard] == 'QS' || cardArray[randomCard] == 'QD' || cardArray[randomCard] == 'QH')
+    				dealerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'KC' || cardArray[randomCard] == 'KS' || cardArray[randomCard] == 'KD' || cardArray[randomCard] == 'KH')
+    				dealerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'AC' || cardArray[randomCard] == 'AS' || cardArray[randomCard] == 'AD' || cardArray[randomCard] == 'AH') {
+    				if(dealerCollectiveSum < 11)
+    					dealerCollectiveSum += 11;
+    				else
+    					dealerCollectiveSum += 1;   
+    			}
+			}
+
+			dealerHandElement.innerHTML = "Dealer's Hand: " + dealerDeck[0] + ", ???";
+
+			if(playerCollectiveSum == 21) {
+				document.getElementById('hitButton').disabled = true;
+				document.getElementById('standButton').disabled = true;
+				gameStateElement.innerHTML = "You got Blackjack! Dealer's Turn";
+				dealerTurn();
+			}
+
+			if(dealerCollectiveSum == 21) {
+				document.getElementById('hitButton').disabled = true;
+				document.getElementById('standButton').disabled = true;
+				gameStateElement.innerHTML = "Dealer's Blackjack! You Lose";
+			}
+		}
+
+		function hit() {
+
+			randomCard = Math.floor(Math.random() * cardArray.length);								
+				cardAlreadyDealt = cardAlreadyDealtCheck();
+
+				while(cardAlreadyDealt == true) {
+
+					randomCard = Math.floor(Math.random() * cardArray.length);
+					cardAlreadyDealt = cardAlreadyDealtCheck();
+				
+				}
+
+				dealtCards[dealtCardsIndex] = cardArray[randomCard];
+				dealtCardsIndex++;
+
+    			playerDeck[playerDeckCardAmount] = cardArray[randomCard];
+    			playerDeckCardAmount++;
+
+    			if(cardArray[randomCard] == '02C' || cardArray[randomCard] == '02S' || cardArray[randomCard] == '02D' || cardArray[randomCard] == '02H')
+    				playerCollectiveSum += 2;
+    			else if (cardArray[randomCard] == '03C' || cardArray[randomCard] == '03S' || cardArray[randomCard] == '03D' || cardArray[randomCard] == '03H')
+    				playerCollectiveSum += 3;
+    			else if (cardArray[randomCard] == '04C' || cardArray[randomCard] == '04S' || cardArray[randomCard] == '04D' || cardArray[randomCard] == '04H')
+    				playerCollectiveSum += 4;
+    			else if (cardArray[randomCard] == '05C' || cardArray[randomCard] == '05S' || cardArray[randomCard] == '05D' || cardArray[randomCard] == '05H')
+    				playerCollectiveSum += 5;    			
+    			else if (cardArray[randomCard] == '06C' || cardArray[randomCard] == '06S' || cardArray[randomCard] == '06D' || cardArray[randomCard] == '06H')
+    				playerCollectiveSum += 6;
+    			else if (cardArray[randomCard] == '07C' || cardArray[randomCard] == '07S' || cardArray[randomCard] == '07D' || cardArray[randomCard] == '07H')
+    				playerCollectiveSum += 7;
+    			else if (cardArray[randomCard] == '08C' || cardArray[randomCard] == '08S' || cardArray[randomCard] == '08D' || cardArray[randomCard] == '08H')
+    				playerCollectiveSum += 8;   
+    			else if (cardArray[randomCard] == '09C' || cardArray[randomCard] == '09S' || cardArray[randomCard] == '09D' || cardArray[randomCard] == '09H')
+    				playerCollectiveSum += 9;
+    			else if (cardArray[randomCard] == '10C' || cardArray[randomCard] == '10S' || cardArray[randomCard] == '10D' || cardArray[randomCard] == '10H')
+    				playerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'JC' || cardArray[randomCard] == 'JS' || cardArray[randomCard] == 'JD' || cardArray[randomCard] == 'JH')
+    				playerCollectiveSum += 10;    			
+    			else if (cardArray[randomCard] == 'QC' || cardArray[randomCard] == 'QS' || cardArray[randomCard] == 'QD' || cardArray[randomCard] == 'QH')
+    				playerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'KC' || cardArray[randomCard] == 'KS' || cardArray[randomCard] == 'KD' || cardArray[randomCard] == 'KH')
+    				playerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'AC' || cardArray[randomCard] == 'AS' || cardArray[randomCard] == 'AD' || cardArray[randomCard] == 'AH') {
+    				if(playerCollectiveSum < 11)
+    					playerCollectiveSum += 11;
+    				else
+    					playerCollectiveSum += 1;   
+    			}
+
+			playerHandElement.innerHTML = "Your Hand: " + playerDeck.join(', ');
+			playerCollectiveTotalElement.innerHTML = "Collective Total: " + playerCollectiveSum;
+
+			if(playerCollectiveSum > 21) {
+				document.getElementById('hitButton').disabled = true;
+				document.getElementById('standButton').disabled = true;
+				gameStateElement.innerHTML = "Bust! Dealer's Turn";
+				dealerTurn();
+			}
+		}
+
+		function stand() {
+				document.getElementById('hitButton').disabled = true;
+				document.getElementById('standButton').disabled = true;
+				dealerTurn();
+		}
+
+		function cardAlreadyDealtCheck() {
+
+			var check = false;
+
+			for (var j = 0; j < dealtCards.length+1; j++) {
+				if (dealtCards[j] == cardArray[randomCard])
+					check = true;
+			}
+
+			return check;
+		}
+
+		function dealerTurn() {
+			while(dealerCollectiveSum < 17){
+
+				randomCard = Math.floor(Math.random() * cardArray.length);				
+				cardAlreadyDealt = cardAlreadyDealtCheck();
+
+				while(cardAlreadyDealt == true) {
+
+					randomCard = Math.floor(Math.random() * cardArray.length);
+					cardAlreadyDealt = cardAlreadyDealtCheck();
+				
+				}
+
+				dealtCards[dealtCardsIndex] = cardArray[randomCard];
+				dealtCardsIndex++;
+
+    			dealerDeck[dealerDeckCardAmount] = cardArray[randomCard];
+    			dealerDeckCardAmount++;
+
+    			if(cardArray[randomCard] == '02C' || cardArray[randomCard] == '02S' || cardArray[randomCard] == '02D' || cardArray[randomCard] == '02H')
+    				dealerCollectiveSum += 2;
+    			else if (cardArray[randomCard] == '03C' || cardArray[randomCard] == '03S' || cardArray[randomCard] == '03D' || cardArray[randomCard] == '03H')
+    				dealerCollectiveSum += 3;
+    			else if (cardArray[randomCard] == '04C' || cardArray[randomCard] == '04S' || cardArray[randomCard] == '04D' || cardArray[randomCard] == '04H')
+    				dealerCollectiveSum += 4;
+    			else if (cardArray[randomCard] == '05C' || cardArray[randomCard] == '05S' || cardArray[randomCard] == '05D' || cardArray[randomCard] == '05H')
+    				dealerCollectiveSum += 5;    			
+    			else if (cardArray[randomCard] == '06C' || cardArray[randomCard] == '06S' || cardArray[randomCard] == '06D' || cardArray[randomCard] == '06H')
+    				dealerCollectiveSum += 6;
+    			else if (cardArray[randomCard] == '07C' || cardArray[randomCard] == '07S' || cardArray[randomCard] == '07D' || cardArray[randomCard] == '07H')
+    				dealerCollectiveSum += 7;
+    			else if (cardArray[randomCard] == '08C' || cardArray[randomCard] == '08S' || cardArray[randomCard] == '08D' || cardArray[randomCard] == '08H')
+    				dealerCollectiveSum += 8;   
+    			else if (cardArray[randomCard] == '09C' || cardArray[randomCard] == '09S' || cardArray[randomCard] == '09D' || cardArray[randomCard] == '09H')
+    				dealerCollectiveSum += 9;
+    			else if (cardArray[randomCard] == '10C' || cardArray[randomCard] == '10S' || cardArray[randomCard] == '10D' || cardArray[randomCard] == '10H')
+    				dealerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'JC' || cardArray[randomCard] == 'JS' || cardArray[randomCard] == 'JD' || cardArray[randomCard] == 'JH')
+    				dealerCollectiveSum += 10;    			
+    			else if (cardArray[randomCard] == 'QC' || cardArray[randomCard] == 'QS' || cardArray[randomCard] == 'QD' || cardArray[randomCard] == 'QH')
+    				dealerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'KC' || cardArray[randomCard] == 'KS' || cardArray[randomCard] == 'KD' || cardArray[randomCard] == 'KH')
+    				dealerCollectiveSum += 10;
+    			else if (cardArray[randomCard] == 'AC' || cardArray[randomCard] == 'AS' || cardArray[randomCard] == 'AD' || cardArray[randomCard] == 'AH') {
+    				if(dealerCollectiveSum < 11)
+    					dealerCollectiveSum += 11;
+    				else
+    					dealerCollectiveSum += 1;   
+    			}
+
+				dealerHandElement.innerHTML = "Dealer's Hand: " + dealerDeck.join(', ');
+
+			}
+
+			if(dealerCollectiveSum > 21) {
+				if(playerCollectiveSum > 21)
+					gameStateElement.innerHTML = "Dealer + Player Bust! You Tied!";
+				else
+					gameStateElement.innerHTML = "Dealer Bust! You Win!";
+			}
+			else {
+				if(playerCollectiveSum > 21)
+					gameStateElement.innerHTML = "Bust! You Lose";
+				else if (dealerCollectiveSum > playerCollectiveSum)
+					gameStateElement.innerHTML = "Dealer Wins! You Lose";
+				else if (dealerCollectiveSum == playerCollectiveSum)
+					gameStateElement.innerHTML = "Push! You Tied!";
+				else if (dealerCollectiveSum < playerCollectiveSum)
+					gameStateElement.innerHTML = "You Win!";
+
+			}
+		}
+
+	initializeGame();
+	
+	</script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  </body>
+</html>

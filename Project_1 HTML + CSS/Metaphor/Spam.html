@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metaphor by META+LAB</title>
+  <meta name="description" content="">
+  <link rel="icon" href="//www.csun.edu/sites/default/themes/csun/favicon.ico" type="image/x-icon">
+
+  <!-- CSUN Branded Fonts -->
+  <script src="//use.typekit.net/gfb2mjm.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+
+  <link rel="stylesheet" href="http://cdn.metalab.csun.edu/metaphor/css/metaphor.css">
+  <link rel="stylesheet" href="../your-personal-project/path/to/styles.css">
+
+    <style>
+      body {margin:0;}
+
+      .topnav {
+        overflow: hidden;
+        background-color: #333;
+      }
+
+      .topnav a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+      }
+
+      .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+
+      .topnav a.active {
+          background-color: #4CAF50;
+          color: white;
+      }
+
+      .sidenav {
+          height: 100%;
+          width: 0;
+          position: fixed;
+          z-index: 1;
+          top: 0;
+          left: 0;
+          background-color: #111;
+          overflow-x: hidden;
+          transition: 0.5s;
+          padding-top: 60px;
+      }
+
+      .sidenav img {
+        position: absolute;
+        top: 15px;
+        left: 25px;
+      }
+
+      .sidenav a {
+          float:top;
+          padding: 10px 28px 8px 32px;
+          text-decoration: none;
+          font-size: 25px;
+          color: #818181;
+          display: block;
+          transition: 0.3s;
+          text-align: left
+      }
+
+      .sidenav a:hover {
+          color: #f1f1f1;
+      }
+
+      .sidenav .closebtn {
+          position: absolute;
+          top: 0;
+          right: 0px;
+          font-size: 36px;
+          margin-left: 50px;
+      }
+
+      tr:nth-child(even){background-color: #f2f2f2}
+
+      #main {
+          transition: margin-left .5s;
+      }
+
+      #mainbody {
+          padding: 16px;
+          text-align: left
+      }
+
+      @media screen and (max-height: 450px) {
+        .sidenav {padding-top: 15px;}
+        .sidenav a {font-size: 18px;}
+      }
+    </style>
+
+</head>
+<body>
+
+    <div id="mySidenav" class="sidenav">
+      <img src="logo.png" alt="FreeMail" style="width:150px; height:54px;">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="Inbox.html" style="padding-top: 25px">Inbox <span style="float:right;">3</span></a>
+      <a href="Trash.html">Trash <span style="float:right;">3</span></a>
+      <a href="Spam.html">Spam <span style="float:right;">1</span></a>
+      <a href="Compose.html">Compose New</a>
+
+    </div>
+
+    <div id="main">
+
+      <div class="topnav" id="myNavBar">
+        <span style="font-size:30px; cursor:pointer; float: left; color: white; padding: 4px 10px" onclick="openNav()">&#9776;</span>
+        <a href="#home" class="nav-link disabled">Home</a>
+        <a href="Inbox.html"><b>Mail</b></a>
+        <a href="#contact" class="nav-link disabled">Contacts</a>
+        <a href="#about" class="nav-link disabled">Tasks</a>
+        <a href="LogIn.html">Log Out</a>
+      </div>
+      
+      <div id="mainbody" style="max-width: 1100px; margin: 0 auto">
+        <h1>Spam
+          <span style="float:right;">
+            <form class="form-inline my-2 my-lg-0" style="float: right">
+              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+
+            <button type="button" class="btn btn-outline-danger" style="float:right; margin-right: 10px">Delete</button>
+            <button type="button" class="btn btn-outline-warning" style="float:right; margin-right: 8px">Report</button>
+            <button type="button" class="btn btn-outline-primary" style="float:right; margin-right: 8px">Not Spam</button>
+
+          </span>
+        </h1>
+       
+        <table class="table table-hover" id="inbox">
+          <thead>
+            <tr>
+              <th>
+                <input class="form-check-input" type="checkbox" id="blankCheckbox" value="option1" aria-label="..." style="margin-left: 0px" onchange="checkAll ('inbox')" name="chk[]">
+              </th>
+              </th>
+              <th>From</th>
+              <th>Subject</th>
+              <th>Recieved</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">
+                <input class="form-check-input" type="checkbox" id="blankCheckbox" value="option1" aria-label="..." style="margin-left: 0px">
+              </th>
+              <th>
+                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="display:block; text-decoration:none; color:black" >
+                  Lesbian Founded Sperm Bank
+                </th>
+              <th>
+                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="display:block; text-decoration:none; color:black">
+                  Your donation has found a new home!
+                </th>
+              <th>
+                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="display:block; text-decoration:none; color:black">
+                  Jun 06, 2015 @ 02:36 PM
+                </th>
+             </a> 
+           </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+
+    <script>
+      function openNav() {
+          document.getElementById("mySidenav").style.width = "250px";
+          document.getElementById("main").style.marginLeft = "250px";
+      }
+
+      function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+          document.getElementById("main").style.marginLeft= "0";
+      }
+
+      function checkAll (tableID) {
+         var table = document.getElementById (tableID);
+         var val = table.rows[0].cells[0].children[0].checked;
+         for (var i = 1; i < table.rows.length; i++)
+         {
+            table.rows[i].cells[0].children[0].checked = val;
+         }
+       }
+    </script>
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+  <script src="//cdn.metalab.csun.edu/metaphor/js/metaphor.js"></script>
+</body>
+</html>

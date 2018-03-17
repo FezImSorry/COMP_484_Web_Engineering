@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  
+    <style>
+      body {margin:0;}
+
+      .topnav {
+        overflow: hidden;
+        background-color: #333;
+      }
+
+      .topnav a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+      }
+
+      .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+
+      .topnav a.active {
+          background-color: #4CAF50;
+          color: white;
+      }
+
+      .sidenav {
+          height: 100%;
+          width: 0;
+          position: fixed;
+          z-index: 1;
+          top: 0;
+          left: 0;
+          background-color: #111;
+          overflow-x: hidden;
+          transition: 0.5s;
+          padding-top: 60px;
+      }
+
+      .sidenav img {
+        position: absolute;
+        top: 15px;
+        left: 25px;
+      }
+
+      .sidenav a {
+          float:top;
+          padding: 10px 28px 8px 32px;
+          text-decoration: none;
+          font-size: 25px;
+          color: #818181;
+          display: block;
+          transition: 0.3s;
+          text-align: left
+      }
+
+      .sidenav a:hover {
+          color: #f1f1f1;
+      }
+
+      .sidenav .closebtn {
+          position: absolute;
+          top: 0;
+          right: 0px;
+          font-size: 36px;
+          margin-left: 50px;
+      }
+
+      tr:nth-child(even){background-color: #f2f2f2}
+
+      #main {
+          transition: margin-left .5s;
+      }
+
+      #mainbody {
+          padding: 16px;
+          text-align: left
+      }
+
+      @media screen and (max-height: 450px) {
+        .sidenav {padding-top: 15px;}
+        .sidenav a {font-size: 18px;}
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <div id="mySidenav" class="sidenav">
+      <img src="logo.png" alt="FreeMail" style="width:150px; height:54px;">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="Inbox.html" style="padding-top: 25px">Inbox <span style="float:right;">3</span></a>
+      <a href="Trash.html">Trash <span style="float:right;">3</span></a>
+      <a href="Spam.html">Spam <span style="float:right;">1</span></a>
+      <a href="Compose.html">Compose New</a>
+
+    </div>
+
+    <div id="main">
+
+      <div class="topnav" id="myNavBar">
+        <span style="font-size:30px; cursor:pointer; float: left; color: white; padding: 4px 10px" onclick="openNav()">&#9776;</span>
+        <a href="#home" class="nav-link disabled">Home</a>
+        <a href="Inbox.html"><b>Mail</b></a>
+        <a href="#contact" class="nav-link disabled">Contacts</a>
+        <a href="#about" class="nav-link disabled">Tasks</a>
+        <a href="LogIn.html">Log Out</a>
+      </div>
+      
+      <div id="mainbody" style="max-width: 1100px; margin: 0 auto">
+        <h1>Message Sent</h1>
+
+        <div class="alert alert-success" role="alert" style="margin-top: 20px;">
+          <p>Success! Your message has been sent successfully.</p>
+          <p><a href="Inbox.html" class="alert-link">Return to Inbox</a> or <a href="Compose.html" class="alert-link">Compose another message</a></p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script>
+      function openNav() {
+          document.getElementById("mySidenav").style.width = "250px";
+          document.getElementById("main").style.marginLeft = "250px";
+      }
+
+      function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+          document.getElementById("main").style.marginLeft= "0";
+      }
+
+      function checkAll (tableID) {
+         var table = document.getElementById (tableID);
+         var val = table.rows[0].cells[0].children[0].checked;
+         for (var i = 1; i < table.rows.length; i++)
+         {
+            table.rows[i].cells[0].children[0].checked = val;
+         }
+       }
+    </script>
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  </body>
+</html>
